@@ -32,34 +32,16 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
+
+  pull_request_ci:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: Run PR/push CI
+        run: echo 'Running PR/push CI'
       - name: Deploy to prod
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-success: true
-
-  pull_request_ci:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
-    steps:
-      - name: Run PR CI
-        run: echo 'Running PR only CI'
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm install
-      - name: Check style
-        run: npm run eslint
-      - name: build
-        run: npm run build
-      - name: test
-        run: npm run test
-      - name: e2e tests
-        uses: cypress-io/github-action@v5
-        with:
-          command: npm run test:e2e
-          start: npm run start-prod
-          wait-on: http://localhost:5000
