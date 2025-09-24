@@ -9,9 +9,11 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  simple_deployment_pipeline:
+  normal_ci:
     runs-on: ubuntu-latest
     steps:
+      - name: Run normal CI
+        run: echo 'Running normal CI'
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -30,6 +32,13 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
+
+  pull_request_ci:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: Run PR/push CI
+        run: echo 'Running PR/push CI'
       - name: Deploy to prod
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
