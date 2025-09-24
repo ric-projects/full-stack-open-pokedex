@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000
 app.use(express.static('dist'))
 
 app.get('/version', (_req,res) => {
-  res.send('7, new features branch with PR only CI')
+  res.send('8, new features branch with PR only CI')
 })
 
 app.get('/health', (_req, res) => {
