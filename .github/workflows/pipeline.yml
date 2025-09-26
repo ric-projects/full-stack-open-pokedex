@@ -55,7 +55,7 @@ jobs:
     steps:
 
       - name: Run versioning CI
-        run: echo 'Running normal CI'
+        run: echo 'Running versioning CI'
       - uses: actions/checkout@v4
 
       - name: Bump version and push tag
