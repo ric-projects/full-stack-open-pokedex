@@ -1,9 +1,9 @@
 name: Deployment pipeline
 
 env:
-  ARRAY_COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  STRING_COMMIT_MESSAGES: ${{ join( $ARRAY_COMMIT_MESSAGES ) }}
-  SKIPPABLE: ${{ contains( $STRING_COMMIT_MESSAGES, '#skip') }}
+  # ARRAY_COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+  # STRING_COMMIT_MESSAGES: ${{ join( $ARRAY_COMMIT_MESSAGES ) }}
+  SKIPPABLE: ${{ contains( join( toJson(github.event.commits.*.message) ), '#skip') }}
 
 on:
   push:
