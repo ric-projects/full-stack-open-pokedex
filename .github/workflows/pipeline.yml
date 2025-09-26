@@ -51,7 +51,7 @@ jobs:
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.env.SKIPPABLE == 'false' }}
+    if: ${{ (github.event_name == 'push') && (github.env.SKIPPABLE == 'false') }}
     steps:
 
       - name: print env variables
