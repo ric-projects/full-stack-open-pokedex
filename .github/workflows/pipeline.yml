@@ -1,5 +1,10 @@
 name: Deployment pipeline
 
+env:
+  ARRAY_COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+  STRING_COMMIT_MESSAGES: ${{ join( env.ARRAY_COMMIT_MESSAGES ) }}
+  SKIPPABLE: ${{ contains( env.STRING_COMMIT_MESSAGES, '#skip') }}
+
 on:
   push:
     branches:
@@ -70,9 +75,14 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: commits
         env:
-          COMMITS: ${{ toJson(github.events.commits) }}
+          COMMITS: ${{ toJson(github.event.commits) }}
         run: echo "$COMMITS"
       - name: commit messages
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
+
+      - name: print variables
+        run: echo "$env.STRING_COMMIT_MESSAGES"
+      - name: print variables
+        run: echo "$env.SKIPPABLE"
