@@ -1,5 +1,10 @@
 name: Deployment pipeline
 
+env:
+  ARRAY_COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+  STRING_COMMIT_MESSAGES: ${{ join( github.env.ARRAY_COMMIT_MESSAGES ) }}
+  SKIPPABLE: ${{ contains( github.env.STRING_COMMIT_MESSAGES, '#skip') }}
+
 on:
   push:
     branches:
@@ -36,7 +41,7 @@ jobs:
       #     start: npm run start-prod
       #     wait-on: http://localhost:5000
       
-      - if: ${{ github.event_name == 'push' }}
+      - if: ${{ github.event_name == 'push' && env.SKIPPABLE != 'true' }}
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
@@ -46,7 +51,7 @@ jobs:
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && github.env.SKIPPABLE != 'true' }}
     steps:
 
       - name: Run versioning CI
@@ -70,9 +75,14 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: commits
         env:
-          COMMITS: ${{ toJson(github.events.commits) }}
+          COMMITS: ${{ toJson(github.event.commits) }}
         run: echo "$COMMITS"
       - name: commit messages
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
+
+      - name: print variables
+        run: echo "$STRING_COMMIT_MESSAGES"
+      - name: print variables
+        run: echo "$SKIPPABLE"
