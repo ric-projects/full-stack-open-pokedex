@@ -41,7 +41,7 @@ jobs:
       #     start: npm run start-prod
       #     wait-on: http://localhost:5000
       
-      - if: ${{ github.event_name == 'push' }}
+      - if: ${{ github.event_name == 'push' && env.SKIPPABLE != 'true' }}
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
@@ -51,7 +51,7 @@ jobs:
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && github.env.SKIPPABLE != 'true' }}
     steps:
 
       - name: Run versioning CI
