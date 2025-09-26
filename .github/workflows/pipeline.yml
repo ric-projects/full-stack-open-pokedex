@@ -83,6 +83,6 @@ jobs:
         run: echo "$COMMIT_MESSAGES"
 
       - name: print variables
-        run: echo "$env.STRING_COMMIT_MESSAGES"
+        run: echo "$STRING_COMMIT_MESSAGES"
       - name: print variables
-        run: echo "$env.SKIPPABLE"
+        run: echo "$SKIPPABLE"
