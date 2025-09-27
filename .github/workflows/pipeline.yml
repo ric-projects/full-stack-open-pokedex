@@ -33,18 +33,36 @@ jobs:
         run: npm run test
       
       - name: e2e tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@c5724eda82337bcff977ce14509f47052c12e04c
         with:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
       
       - if: ${{ github.event_name == 'push' && env.SKIPPABLE == 'false' }}
-        uses: johnbeynon/render-deploy-action@v0.0.8
+        uses: johnbeynon/render-deploy-action@a0588f9aca995a15d69a72cb2bfbf37c12e5b540
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-success: true
+        
+      - name: Success Notify
+        if: ${{ success() }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: |
+            A new version of Pokedex was deployed
+
+      - name: Failed Notify
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          severity: error
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: |
+            Render deployment failed
+
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -58,7 +76,7 @@ jobs:
 
       - name: Bump version and push tag
         if: ${{ env.SKIPPABLE == 'false' }}
-        uses: anothrNick/github-tag-action@1.75.0
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_PREFIX: v
