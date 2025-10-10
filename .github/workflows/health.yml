@@ -2,7 +2,7 @@ name: Health checkout
 
 on:
   schedule:
-    - cron: "15 12 1-31 1-12 SUN-SAT"
+    # - cron: "15 12 1-31 1-12 SUN-SAT"
 
 jobs:
   ping:
